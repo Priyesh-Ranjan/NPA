@@ -148,10 +148,6 @@ class Server():
         vecs = [utils.net2vec(delta) for delta in deltas]
         vecs = [vec for vec in vecs if torch.isfinite(vec).all().item()]
         input = torch.stack(vecs, 1).unsqueeze(0)
-        #a = C(input,n)
-        #for i in range(len(deltas)) :
-        #    pd.DataFrame(deltas[i]).to_csv(str(self.savePath)+"Client_"+str(i)+"_Round_"+str(self.iter)+".csv",header = None, index = None)      
-        #print("Weights Saved")
         param_trainable = utils.getTrainableParameters(self.model)
 
         param_nontrainable = [param for param in Delta.keys() if param not in param_trainable]
@@ -178,8 +174,6 @@ class Server():
 
             torch.save(Delta, savepath)
             print(f'[Server] Update vectors have been saved to {savepath}')
-        #correlations = pd.read_csv("/content/drive/MyDrive/FL/corr.csv",header = None, sep = ",") 
-        #pd.DataFrame(correlations).to_csv(str(savepath)+"corr.csv", header = None, sep = ',', index = "None")
 
     ## Aggregation functions ##
 
