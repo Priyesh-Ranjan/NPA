@@ -81,7 +81,7 @@ class Net(nn.Module):
         while len(Honest) == 0 :
             for i in range(n_clients) :
                 for j in range(i+1,n_clients) :
-                    if 1 - cs[i,j] < self.gamma*self.reputation[i] : 
+                    if cs[i,j]*self.reputation[i] > self.gamma : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
