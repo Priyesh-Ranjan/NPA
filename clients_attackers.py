@@ -43,8 +43,6 @@ class Attacker_NPA(Client):
             if epoch%4 == self.cid/6 :
                 for param in self.originalState:
                     self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])
-                print("Scaling",self.backdoor_scaling,"times")     
             else :   
                 for param in self.originalState:
-                    self.stateChange[param] = newState[param] - self.originalState[param]    
-                print("No Scaling this time")    
+                    self.stateChange[param] = newState[param] - self.originalState[param]
