@@ -23,9 +23,7 @@ class Attacker_PA(Client):
     def scaling(self, epoch) :
         newState = self.model.state_dict()
         for param in self.originalState:
-            self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])
-        print("Scaling",self.backdoor_scaling,"times")     
-        
+            self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])        
         
 class Attacker_NPA(Client):
     def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1, backdoor_scaling = 6, backdoor_fraction = 0.2):
