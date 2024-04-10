@@ -27,6 +27,7 @@ class Net(nn.Module):
         self.gamma = gamma
         self.eps = eps
         self.reputation = np.ones(n_clients)
+        self.delta = 0.1
 
     def forward(self, input):
         #         print(input.shape)
@@ -90,4 +91,7 @@ class Net(nn.Module):
             self.gamma = self.gamma + self.eps
         
         wv = np.array([1 if i in Honest else 0 for i in range(n_clients)])    
+        
+        self.reputation = np.array([min(1,i+self.delta) if i in Honest else max(0,i-self.delta) for i in self.reputation])
+        
         return wv

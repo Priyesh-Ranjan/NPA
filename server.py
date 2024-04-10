@@ -115,12 +115,12 @@ class Server():
 
         self.model.cpu()  ## avoid occupying gpu when idle
         print(
-            '[Server] Test set (Backdoored): Average loss: {:.4f}, Success rate: {}/{} ({:.0f}%)\n'.format(test_loss, correct,
+            '[Server] Test set (Backdoored) Backdoor_Results: Average loss: {:.4f}, Success rate: {}/{} ({:.0f}%)\n'.format(test_loss, correct,
                                                                                                     len(
                                                                                                         self.dataLoader.dataset),
                                                                                                     accuracy))
         
-        print('[Server] Test set (Backdoored): Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(good_loss, acc, len(self.dataLoader.dataset), good))
+        print('[Server] Test set (Backdoored) Non-Backdoor_Results: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(good_loss, acc, len(self.dataLoader.dataset), good))
                                                                                                     
         return test_loss, accuracy
 
