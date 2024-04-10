@@ -311,7 +311,7 @@ class Server():
     def normcliquing(self, clients) :
         from rules.normcliquing import Net
         self.Net = Net
-        out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = 0.5, eps = 0.05, kappa=2, tau=0.35, 
+        out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = 0.5, eps = 0.05, kappa=2, tau=0.35, n_clients = len(self.clients),
                                                             init_norm = utils.net2vec(self.model.state_dict()).norm(p=2)).cpu()(arr.cpu()))
         return out
 
