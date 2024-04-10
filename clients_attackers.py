@@ -30,7 +30,7 @@ class Attacker_Backdoor(Client):
         
 class Attacker_Distributed_Backdoor(Client):
     def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1, backdoor_scaling = 6, backdoor_fraction = 0.2):
-        super(Attacker_Backdoor, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
+        super(Attacker_Distributed_Backdoor, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
         self.utils = Backdoor_Utils()
 
     def data_transform(self, data, target, epoch):
