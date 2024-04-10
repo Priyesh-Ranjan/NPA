@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import random
 
 class Client():
-    def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1):
+    def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1, backdoor_scaling=1, backdoor_fraction=0):
         self.cid = cid
         self.ctype = ctype
         self.model = model
@@ -20,6 +20,8 @@ class Client():
         self.isTrained = False
         self.inner_epochs = inner_epochs
         self.criterion = criterion
+        self.backdoor_scaling = backdoor_scaling
+        self.backdoor_fraction = backdoor_fraction
 
     def init_stateChange(self):
         states = deepcopy(self.model.state_dict())
@@ -34,22 +36,17 @@ class Client():
 
     def data_transform(self, data, target):
         return data, target
+    
+    def backdoor_scaling(self):
+        newState = self.model.state_dict()
+        self.model.load_state_dict(deepcopy(newState)) 
 
     def train(self, epoch):
         self.model.to(self.device)
         self.model.train()
-        rand = random.random()
-        #part = random.sample(range(2),1)[0] int(epoch%4)
         for e in range(self.inner_epochs):
             for batch_idx, (data, target) in enumerate(self.dataLoader):
-                if self.ctype == "B": 
-                    if epoch >= 5 :
-                    #if int(epoch) == 14 :
-                        data, target = self.data_transform(data, target, int(self.cid%6))
-                    else :
-                        data, target = self.data_transform(data, target, -1)
-                else :
-                    data, target = self.data_transform(data, target)
+                data, target = self.data_transform(data, target, epoch)
                 #target = F.one_hot(target, num_classes=2)
                 #target = target.type(torch.cuda.FloatTensor)    
                 data, target = data.to(self.device), target.to(self.device)
@@ -62,9 +59,6 @@ class Client():
         
         self.isTrained = True
         self.model.cpu()  ## avoid occupying gpu when idle
-        
-        if self.ctype == "B" and epoch>=5 :
-            self.backdoor_scaling()
 
     def test(self, testDataLoader):
         self.model.to(self.device)
@@ -88,7 +82,7 @@ class Client():
                                                                                               100. * correct / len(
                                                                                                   testDataLoader.dataset)))
 
-    def update(self):
+    def update(self, epoch):
         assert self.isTrained, 'nothing to update, call train() to obtain gradients'
         newState = self.model.state_dict()
         for param in self.originalState:

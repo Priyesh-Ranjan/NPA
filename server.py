@@ -121,41 +121,11 @@ class Server():
                                                                                                     
         return test_loss, accuracy
 
-    def test_semanticBackdoor(self):
-        print("[Server] Start testing semantic backdoor")
-
-        self.model.to(self.device)
-        self.model.eval()
-        test_loss = 0
-        correct = 0
-        utils = SemanticBackdoor_Utils()
-        with torch.no_grad():
-            for data, target in self.dataLoader:
-                data, target = utils.get_poison_batch(data, target, backdoor_fraction=1,
-                                                      backdoor_label=utils.backdoor_label, evaluation=True)
-                data, target = data.to(self.device), target.to(self.device)
-                output = self.model(data)
-                test_loss += self.criterion(output, target, reduction='sum').item()  # sum up batch loss
-                pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-                correct += pred.eq(target.view_as(pred)).sum().item()
-
-        test_loss /= len(self.dataLoader.dataset)
-        accuracy = 100. * correct / len(self.dataLoader.dataset)
-
-        self.model.cpu()  ## avoid occupying gpu when idle
-        print(
-            '[Server] Test set (Semantic Backdoored): Average loss: {:.4f}, Success rate: {}/{} ({:.0f}%)\n'.format(test_loss,
-                                                                                                             correct,
-                                                                                                             len(
-                                                                                                                 self.dataLoader.dataset),
-                                                                                                             accuracy))
-        return test_loss, accuracy, data, pred
-
     def train(self, group, epoch):
         selectedClients = [self.clients[i] for i in group]
         for c in selectedClients:
             c.train(epoch)
-            c.update()
+            c.update(epoch)
 
         if self.isSaveChanges:
             self.saveChanges(selectedClients)
@@ -307,9 +277,6 @@ class Server():
     def adapt(self, clients) :
         from rules.adapt import Net
         
-        #net = Net()
-        #out = self.FedFuncWholeStateDict(clients, lambda arr: net.main(arr, self.model))
-        
         self.Net = Net
         out = self.FedFuncWholeNet(clients, lambda arr: Net().cpu()(arr.cpu()))
         
@@ -320,9 +287,6 @@ class Server():
         
         net = Net()
         out = self.FedFuncWholeStateDict(clients, lambda arr: net.main(arr, self.model))
-        
-        #self.Net = Net
-        #out = self.FedFuncWholeNet(clients, lambda arr: Net().cpu()(arr.cpu()))
         
         return out
         
