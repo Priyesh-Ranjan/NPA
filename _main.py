@@ -77,10 +77,10 @@ def main(args):
             optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
         elif args.optimizer == 'Adam':
             optimizer = optim.Adam(model.parameters(), lr=args.lr)
-        if i in attacker_list and "DISTRIBUTED" in args.attacks.upper():
-            client_i = Attacker_Distributed_Backdoor(i,'DB', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
-        elif i in attacker_list and 'DISTRIBUTED' not in args.attacks.upper():
-            client_i = Attacker_Backdoor(i,'B', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
+        if i in attacker_list and "NPA" in args.attacks.upper():
+            client_i = Attacker_NPA(i,'DB', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
+        elif i in attacker_list and 'NPA' not in args.attacks.upper():
+            client_i = Attacker_PA(i,'B', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
         else:
             client_i = Client(i,'N', model, trainData[i], optimizer, criterion, device, args.inner_epochs, 1, 0)
         server.attach(client_i)

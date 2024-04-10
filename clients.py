@@ -77,12 +77,16 @@ class Client():
                 testDataLoader.dataset),
                                                                                               100. * correct / len(
                                                                                                   testDataLoader.dataset)))
-
-    def update(self, epoch):
-        assert self.isTrained, 'nothing to update, call train() to obtain gradients'
+    
+    def scaling(self, epoch) :
         newState = self.model.state_dict()
         for param in self.originalState:
             self.stateChange[param] = newState[param] - self.originalState[param]
+        print("No Scaling")    
+    
+    def update(self, epoch):
+        assert self.isTrained, 'nothing to update, call train() to obtain gradients'
+        self.scaling(epoch)
         self.isTrained = False
 
     def getDelta(self):

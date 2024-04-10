@@ -10,9 +10,9 @@ from utils.backdoor_utils import Backdoor_Utils
 from clients import *       
 
 
-class Attacker_Backdoor(Client):
+class Attacker_PA(Client):
     def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1, backdoor_scaling = 6, backdoor_fraction = 0.2):
-        super(Attacker_Backdoor, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
+        super(Attacker_PA, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
         self.utils = Backdoor_Utils()
 
     def data_transform(self, data, target, epoch):
@@ -20,17 +20,16 @@ class Attacker_Backdoor(Client):
                                                    backdoor_label=self.utils.backdoor_label)
         return data, target
     
-    def update(self, epoch):
-        assert self.isTrained, 'nothing to update, call train() to obtain gradients'
+    def scaling(self, epoch) :
         newState = self.model.state_dict()
         for param in self.originalState:
             self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])
-        self.isTrained = False  
+        print("Scaling",self.backdoor_scaling,"times")     
         
         
-class Attacker_Distributed_Backdoor(Client):
+class Attacker_NPA(Client):
     def __init__(self, cid, ctype, model, dataLoader, optimizer, criterion=F.nll_loss, device='cpu', inner_epochs=1, backdoor_scaling = 6, backdoor_fraction = 0.2):
-        super(Attacker_Distributed_Backdoor, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
+        super(Attacker_NPA, self).__init__(cid, ctype, model, dataLoader, optimizer, criterion, device, inner_epochs, backdoor_scaling, backdoor_fraction)
         self.utils = Backdoor_Utils()
 
     def data_transform(self, data, target, epoch):
@@ -39,13 +38,13 @@ class Attacker_Distributed_Backdoor(Client):
                                                    backdoor_label=self.utils.backdoor_label)
         return data, target
     
-    def update(self, epoch):
-        assert self.isTrained, 'nothing to update, call train() to obtain gradients'
-        newState = self.model.state_dict()
-        if epoch%4 == self.cid/6 :
-            for param in self.originalState:
-                self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])
-        else :   
-            for param in self.originalState:
-                self.stateChange[param] = newState[param] - self.originalState[param]
-        self.isTrained = False  
+    def scaling(self, epoch) :
+            newState = self.model.state_dict()
+            if epoch%4 == self.cid/6 :
+                for param in self.originalState:
+                    self.stateChange[param] = self.backdoor_scaling*(newState[param] - self.originalState[param])
+                print("Scaling",self.backdoor_scaling,"times")     
+            else :   
+                for param in self.originalState:
+                    self.stateChange[param] = newState[param] - self.originalState[param]    
+                print("No Scaling this time")    
