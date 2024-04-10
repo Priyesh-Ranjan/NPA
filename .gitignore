@@ -1,0 +1,12 @@
+__pycache__/*
+utils/__pycache__/*
+__pycache__/*
+tasks/__pycache__/*
+rules/__pycache__/*
+logs/*
+data/*
+```
+
+*.cpython-37.pyc
+*.cpython-38.pyc
+*.cpython-310.pyc
