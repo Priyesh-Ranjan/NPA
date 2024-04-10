@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument("--n_attacker", type=int, default=0)
     parser.add_argument("--attack_type", type=str, default="backdoor")
     parser.add_argument("--backdoor_scaling", type=int, default=6)
-    parser.add_argument("--backdoor_fraction", type=float, defualt=0.2)
+    parser.add_argument("--backdoor_fraction", type=float, default=0.2)
     #parser.add_argument("--backdoor_trigger", nargs="*",  type=int, default=[0,0,1,1], help="the hyperparameter for backdoor trigger, do `--backdoor_trigger x_offset y_offset x_interval y_interval`")    
     #parser.add_argument("--n_attacker_semanticBackdoor", type=int, default=0)
     #parser.add_argument("--n_attacker_labelFlipping", type=int, default=0)
