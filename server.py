@@ -124,9 +124,7 @@ class Server():
         selectedClients = [self.clients[i] for i in group]
         for c in selectedClients:
             c.train(epoch)
-            print("Client_training_done")
             c.update(epoch)
-            print("\n")
 
         if self.isSaveChanges:
             self.saveChanges(selectedClients)

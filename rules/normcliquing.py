@@ -62,6 +62,8 @@ class Net(nn.Module):
                 
         # Initializing Norm-Clipping
         
+        print("Calculating Norms")
+        
         norms = [grad.norm(p=2) for grad in grads]
         idx = [1 if norm <= self.norm else 0 for norm in norms]
         if sum(idx)/len(idx) > self.tau :
@@ -71,6 +73,8 @@ class Net(nn.Module):
         
         
         # Finding Cliques
+        
+        print("Calculating Cosines")
         
         Honest = []
         cs = smp.cosine_similarity(grads)
@@ -82,9 +86,12 @@ class Net(nn.Module):
                     if cs[i,j] < self.gamma*self.reputation[i] : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
+            print("Finding Cliques")            
             Cliques = list(bronk([], range(n_clients), [], neighbors))  
+            print("Found Cliques")
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
+                print("Found Honest Clients")
                 break
             self.gamma = self.gamma + self.eps
         
