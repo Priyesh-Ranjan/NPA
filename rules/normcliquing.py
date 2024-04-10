@@ -78,17 +78,19 @@ class Net(nn.Module):
         cs = smp.cosine_similarity(grads)
         neighbors = np.zeros_like(cs)
         
+        gamma = self.gamma
+        
         while len(Honest) == 0 :
             for i in range(n_clients) :
                 for j in range(i+1,n_clients) :
-                    if cs[i,j]*self.reputation[i] > self.gamma : 
+                    if cs[i,j]*self.reputation[i] > gamma : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
                 break
-            self.gamma = self.gamma + self.eps
+            gamma += self.eps
         
         wv = np.array([1 if i in Honest else 0 for i in range(n_clients)])    
         
