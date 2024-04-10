@@ -62,26 +62,19 @@ class Net(nn.Module):
         n_clients = grads.shape[0]
                 
         # Initializing Norm-Clipping
-        
-        print("Calculating Norms")
-        
+                
         norms = [grad.norm(p=2) for grad in grads]
         idx = [1 if norm <= self.norm else 0 for norm in norms]
         if sum(idx)/len(idx) > self.tau :
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
-        grads = torch.stack(grads, 1).permute(1,0)
-        print(grads.shape)
-        
+        grads = torch.stack(grads, 1).permute(1,0)        
         
         # Finding Cliques
-        
-        print("Calculating Cosines")
-        
+                
         Honest = []
         cs = smp.cosine_similarity(grads)
         neighbors = np.zeros_like(cs)
-        print("Found_Cosines")
         
         while len(Honest) == 0 :
             for i in range(n_clients) :
@@ -89,9 +82,8 @@ class Net(nn.Module):
                     if cs[i,j] < self.gamma*self.reputation[i] : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
-            print("Found_Neighbors")            
             print("Finding Cliques")            
-            Cliques = list(bronk([], range(n_clients), [], neighbors))  
+            Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
             print("Found Cliques")
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
