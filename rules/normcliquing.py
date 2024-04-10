@@ -71,6 +71,7 @@ class Net(nn.Module):
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
         grads = torch.stack(grads, 1)
+        print(grads.shape)
         
         
         # Finding Cliques
