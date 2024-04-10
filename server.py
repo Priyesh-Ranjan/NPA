@@ -10,7 +10,6 @@ import torch.nn.functional as F
 import numpy as np
 
 from utils import utils
-from utils.backdoor_semantic_utils import SemanticBackdoor_Utils
 from utils.backdoor_utils import Backdoor_Utils
 import time
 
@@ -207,7 +206,7 @@ class Server():
         elif ar == 'adapt' :
             self.AR = self.adapt
         elif ar == 'new' :
-            self.AR = self.New    
+            self.AR = self.normcliquing
         else:
             raise ValueError("Not a valid aggregation rule or aggregation rule not implemented")
 
@@ -304,6 +303,12 @@ class Server():
         
     def flame(self, clients) :
         from rules.flame import Net
+        self.Net = Net
+        out = self.FedFuncWholeNet(clients, lambda arr: Net().cpu()(arr.cpu()))
+        return out
+    
+    def normcliquing(self, clients) :
+        from rules.normcliquing import Net
         self.Net = Net
         out = self.FedFuncWholeNet(clients, lambda arr: Net().cpu()(arr.cpu()))
         return out
