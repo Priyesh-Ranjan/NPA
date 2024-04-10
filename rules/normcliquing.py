@@ -82,14 +82,12 @@ class Net(nn.Module):
                     if cs[i,j] < self.gamma*self.reputation[i] : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
-            print("Finding Cliques")            
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
-            print("Found Cliques")
+            print(Cliques)
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
-                print("Found Honest Clients")
                 break
             self.gamma = self.gamma + self.eps
         
-        wv = [1 if i in Honest else 0 for i in range(n_clients)]    
+        wv = np.array([1 if i in Honest else 0 for i in range(n_clients)])    
         return wv
