@@ -70,7 +70,7 @@ class Net(nn.Module):
         if sum(idx)/len(idx) > self.tau :
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
-        grads = torch.stack(grads, 1)
+        grads = torch.stack(grads, 1).permute(1,0)
         print(grads.shape)
         
         
