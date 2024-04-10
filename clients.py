@@ -47,12 +47,9 @@ class Client():
         for e in range(self.inner_epochs):
             for batch_idx, (data, target) in enumerate(self.dataLoader):
                 data, target = self.data_transform(data, target, epoch)
-                #target = F.one_hot(target, num_classes=2)
-                #target = target.type(torch.cuda.FloatTensor)    
                 data, target = data.to(self.device), target.to(self.device)
                 self.optimizer.zero_grad()
                 output = self.model(data)
-                #target = target.unsqueeze(1)
                 loss = self.criterion(output, target)
                 loss.backward()
                 self.optimizer.step()
@@ -75,7 +72,6 @@ class Client():
 
         test_loss /= len(testDataLoader.dataset)
         self.model.cpu()  ## avoid occupying gpu when idle
-        # Uncomment to print the test scores of each client
         print('client {} ## Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)'.format(self.cid,
                                                                                               test_loss, correct, len(
                 testDataLoader.dataset),
@@ -89,6 +85,5 @@ class Client():
             self.stateChange[param] = newState[param] - self.originalState[param]
         self.isTrained = False
 
-    #         self.test(self.dataLoader)
     def getDelta(self):
         return self.stateChange

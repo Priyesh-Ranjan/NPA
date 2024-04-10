@@ -124,12 +124,15 @@ class Server():
         selectedClients = [self.clients[i] for i in group]
         for c in selectedClients:
             c.train(epoch)
+            print("Client_training_done")
             c.update(epoch)
+            print("\n")
 
         if self.isSaveChanges:
             self.saveChanges(selectedClients)
             
         tic = time.perf_counter()
+        print("Aggregating")
         Delta = self.AR(selectedClients)
         toc = time.perf_counter()
         print(f"[Server] The aggregation takes {toc - tic:0.6f} seconds.\n")
