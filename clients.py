@@ -34,7 +34,7 @@ class Client():
         self.originalState = deepcopy(states)
         self.model.zero_grad()
 
-    def data_transform(self, data, target):
+    def data_transform(self, data, target, epoch):
         return data, target
     
     def backdoor_scaling(self):
