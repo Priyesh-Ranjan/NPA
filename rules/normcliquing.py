@@ -25,6 +25,7 @@ class Net(nn.Module):
         self.tau = tau
         self.norm = kappa*init_norm
         self.gamma = gamma
+        self.eps = eps
         self.reputation = np.ones(n_clients)
 
     def forward(self, input):

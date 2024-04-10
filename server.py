@@ -14,7 +14,7 @@ from utils.backdoor_utils import Backdoor_Utils
 import time
 
 class Server():
-    def __init__(self, model, dataLoader, criterion=F.nll_loss, device='cpu'):
+    def __init__(self, model, dataLoader, criterion=F.nll_loss, device='cpu', kappa = 2, gamma = 0.5, eps = 0.05, tau = 0.35):
         self.clients = []
         self.model = model
         self.dataLoader = dataLoader
@@ -29,6 +29,10 @@ class Server():
         self.savePath = './AggData'
         self.criterion = criterion
         self.path_to_aggNet = ""
+        self.kappa = kappa
+        self.eps = eps
+        self.tau = tau
+        self.gamma = gamma
 
     def init_stateChange(self):
         states = deepcopy(self.model.state_dict())
@@ -311,7 +315,7 @@ class Server():
     def normcliquing(self, clients) :
         from rules.normcliquing import Net
         self.Net = Net
-        out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = 0.5, eps = 0.05, kappa=2, tau=0.35, n_clients = len(self.clients),
+        out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = self.gamma, eps = self.eps, kappa=self.kappa, tau=self.tau, n_clients = len(self.clients),
                                                             init_norm = utils.net2vec(self.model.state_dict()).norm(p=2)).cpu()(arr.cpu()))
         return out
 

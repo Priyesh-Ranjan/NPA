@@ -51,7 +51,7 @@ def main(args):
 
     # create server instance
     model0 = Net()
-    server = Server(model0, testData, criterion, device)
+    server = Server(model0, testData, criterion, device, kappa=args.kappa, gamma=args.gamma, eps=args.eps, tau=args.tau)
     server.set_AR(args.AR)
     server.path_to_aggNet = args.path_to_aggNet
     if args.save_model_weights:
@@ -78,9 +78,9 @@ def main(args):
         elif args.optimizer == 'Adam':
             optimizer = optim.Adam(model.parameters(), lr=args.lr)
         if i in attacker_list and "NPA" in args.attacks.upper():
-            client_i = Attacker_NPA(i,'DB', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
+            client_i = Attacker_NPA(i,'NP', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
         elif i in attacker_list and 'NPA' not in args.attacks.upper():
-            client_i = Attacker_PA(i,'B', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
+            client_i = Attacker_PA(i,'P', model, trainData[i], optimizer, criterion, device, args.inner_epochs, args.backdoor_scaling, args.backdoor_fraction)
         else:
             client_i = Client(i,'N', model, trainData[i], optimizer, criterion, device, args.inner_epochs, 1, 0)
         server.attach(client_i)
