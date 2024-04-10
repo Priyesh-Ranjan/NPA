@@ -80,6 +80,7 @@ class Net(nn.Module):
         Honest = []
         cs = smp.cosine_similarity(grads)
         neighbors = np.zeros_like(cs)
+        print("Found_Cosines")
         
         while len(Honest) == 0 :
             for i in range(n_clients) :
@@ -87,6 +88,7 @@ class Net(nn.Module):
                     if cs[i,j] < self.gamma*self.reputation[i] : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
+            print("Found_Neighbors")            
             print("Finding Cliques")            
             Cliques = list(bronk([], range(n_clients), [], neighbors))  
             print("Found Cliques")
