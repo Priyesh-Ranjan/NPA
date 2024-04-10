@@ -84,7 +84,6 @@ class Net(nn.Module):
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
-            print(Cliques)
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
                 break
