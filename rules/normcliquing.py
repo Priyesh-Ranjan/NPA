@@ -55,7 +55,7 @@ class Net(nn.Module):
         '''
         x = deltas.squeeze(0)
         x = x.permute(1, 0)
-        w = self.main(x)
+        x, w = self.main(x)
         w = w*self.reputation
         print(w)
         w = w / w.sum()
@@ -79,6 +79,7 @@ class Net(nn.Module):
         Honest = []
         cs = smp.cosine_distances(grads)
         neighbors = np.zeros_like(cs)
+        print(cs)
         
         gamma = self.gamma
         
@@ -102,4 +103,4 @@ class Net(nn.Module):
         
         print(self.reputation)
         
-        return wv
+        return grads, wv
