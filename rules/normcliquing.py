@@ -19,7 +19,7 @@ def N(v, g):
     return [i for i, n_v in enumerate(g[v]) if n_v]
 
 class Net(nn.Module):
-    def __init__(self, eps = 0.05, gamma = 0.5, kappa = 2, tau = 0.35, n_clients = 50, init_norm = 0, reputation = 0):
+    def __init__(self, reputation, eps = 0.05, gamma = 0.5, kappa = 2, tau = 0.35, n_clients = 50, init_norm = 0):
         super(Net, self).__init__()
         self.kappa = kappa
         self.tau = tau
