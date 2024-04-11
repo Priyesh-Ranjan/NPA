@@ -33,7 +33,7 @@ class Server():
         self.eps = eps
         self.tau = tau
         self.gamma = gamma
-        self.reputation = np.ones(len(self.clients))
+        self.reputation = 0
 
     def init_stateChange(self):
         states = deepcopy(self.model.state_dict())
@@ -43,6 +43,7 @@ class Server():
 
     def attach(self, c):
         self.clients.append(c)
+        self.reputation = np.ones(len(self.clients))
 
     def distribute(self):
         for c in self.clients:
