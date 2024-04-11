@@ -86,8 +86,8 @@ class Net(nn.Module):
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
-            if max(len(x) for x in Cliques) > n_clients/2 :
-                Honest = max((x) for x in Cliques)
+            if len(max(Cliques, key=len)) > n_clients/2 :
+                Honest = max(Cliques, key=len)
                 print(Honest)
                 break
             gamma += self.eps
