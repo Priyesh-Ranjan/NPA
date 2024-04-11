@@ -19,14 +19,14 @@ def N(v, g):
     return [i for i, n_v in enumerate(g[v]) if n_v]
 
 class Net(nn.Module):
-    def __init__(self, eps = 0.05, gamma = 0.5, kappa = 2, tau = 0.35, n_clients = 50, init_norm = 0):
+    def __init__(self, eps = 0.05, gamma = 0.5, kappa = 2, tau = 0.35, n_clients = 50, init_norm = 0, reputation = 0):
         super(Net, self).__init__()
         self.kappa = kappa
         self.tau = tau
         self.norm = kappa*init_norm
         self.gamma = gamma
         self.eps = eps
-        self.reputation = np.ones(n_clients)
+        self.reputation = reputation
         self.delta = 0.1
         self.n_clients = n_clients
 
@@ -41,7 +41,7 @@ class Net(nn.Module):
         '''
         out = self.adaptor(input)
 
-        return out
+        return self.reputation, out
     
     def adaptor(self, deltas):
         '''

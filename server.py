@@ -33,6 +33,7 @@ class Server():
         self.eps = eps
         self.tau = tau
         self.gamma = gamma
+        self.reputation = np.ones(len(self.clients))
 
     def init_stateChange(self):
         states = deepcopy(self.model.state_dict())
@@ -316,7 +317,8 @@ class Server():
         from rules.normcliquing import Net
         self.Net = Net
         out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = self.gamma, eps = self.eps, kappa=self.kappa, tau=self.tau, n_clients = len(self.clients),
-                                                            init_norm = utils.net2vec(self.model.state_dict()).norm(p=2)).cpu()(arr.cpu()))
+                                                            init_norm = utils.net2vec(self.model.state_dict()).norm(p=2)).cpu()(arr.cpu()),
+                                   reputation=self.reputation)
         return out
 
     def FedFuncWholeNet(self, clients, func):
@@ -327,9 +329,10 @@ class Server():
         deltas = [c.getDelta() for c in clients]
         vecs = [utils.net2vec(delta) for delta in deltas]
         vecs = [vec for vec in vecs if torch.isfinite(vec).all().item()]
-        result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
+        reputation, result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
         result = result.view(-1)
         utils.vec2net(result, Delta)
+        self.reputation = reputation
         return Delta
 
     def FedFuncWholeStateDict(self, clients, func):
