@@ -84,7 +84,9 @@ def main(args):
         else:
             client_i = Client(i,'N', model, trainData[i], optimizer, criterion, device, args.inner_epochs, 1, 0)
         server.attach(client_i)
-
+    
+    server.initialize()
+    
     loss, accuracy = server.test()
     steps = 0
     writer.add_scalar('test/loss', loss, steps)

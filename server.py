@@ -215,9 +215,10 @@ class Server():
             self.AR = self.normcliquing
         else:
             raise ValueError("Not a valid aggregation rule or aggregation rule not implemented")
+    
+    def initialize(self) :
         self.reputation = np.ones(len(self.clients))
         self.norm = utils.net2vec(self.model.state_dict()).norm(p=2)
-    
 
     def FedAvg(self, clients):
         out = self.FedFuncWholeNet(clients, lambda arr: torch.mean(arr, dim=-1, keepdim=True))
