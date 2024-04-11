@@ -95,4 +95,6 @@ class Net(nn.Module):
         
         self.reputation = np.array([min(1,i+self.delta) if i in Honest else max(0,i-self.delta) for i in self.reputation])
         
+        print(self.reputation)
+        
         return wv
