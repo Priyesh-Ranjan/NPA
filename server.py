@@ -317,8 +317,8 @@ class Server():
         from rules.normcliquing import Net
         self.Net = Net
         out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = self.gamma, eps = self.eps, kappa=self.kappa, tau=self.tau, n_clients = len(self.clients),
-                                                            init_norm = utils.net2vec(self.model.state_dict()).norm(p=2)).cpu()(arr.cpu()),
-                                   reputation=self.reputation)
+                                                            init_norm = utils.net2vec(self.model.state_dict()).norm(p=2),
+                                                            reputation=self.reputation).cpu()(arr.cpu()))
         return out
 
     def FedFuncWholeNet(self, clients, func):
