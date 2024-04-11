@@ -93,7 +93,7 @@ class Net(nn.Module):
         
         wv = np.array([1 if i in Honest else 0 for i in range(n_clients)])    
         
-        rep = np.array([min(1,self.reputation[i]+self.delta) if i in Honest else max(0,self.reputation[i]-self.delta) for i in range(self.reputation)])
+        rep = np.array([min(1,self.reputation[i]+self.delta) if i in Honest else max(0,self.reputation[i]-self.delta) for i in range(len(self.reputation))])
         
         self.reputation = rep
         
