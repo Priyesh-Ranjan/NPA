@@ -23,7 +23,7 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.kappa = kappa
         self.tau = tau
-        self.norm = kappa*init_norm
+        self.norm = init_norm*self.kappa
         self.gamma = gamma
         self.eps = eps
         self.reputation = reputation
@@ -42,7 +42,7 @@ class Net(nn.Module):
         '''
         out = self.adaptor(input)
 
-        return self.reputation, out
+        return self.reputation, self.norm, out
     
     def adaptor(self, deltas):
         '''
@@ -72,9 +72,10 @@ class Net(nn.Module):
         if sum(idx)/len(idx) > self.tau :
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
-        grads = torch.stack(grads, 1).permute(1,0)        
+        grads = torch.stack(grads, 1).permute(1,0)   
+        
+        
         # Finding Cliques
-                
         Honest = []
         cs = smp.cosine_distances(grads)
         neighbors = np.zeros_like(cs)

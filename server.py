@@ -43,7 +43,6 @@ class Server():
 
     def attach(self, c):
         self.clients.append(c)
-        self.reputation = np.ones(len(self.clients))
 
     def distribute(self):
         for c in self.clients:
@@ -216,6 +215,9 @@ class Server():
             self.AR = self.normcliquing
         else:
             raise ValueError("Not a valid aggregation rule or aggregation rule not implemented")
+        self.reputation = np.ones(len(self.clients))
+        self.norm = utils.net2vec(self.model.state_dict()).norm(p=2)
+    
 
     def FedAvg(self, clients):
         out = self.FedFuncWholeNet(clients, lambda arr: torch.mean(arr, dim=-1, keepdim=True))
@@ -318,7 +320,7 @@ class Server():
         from rules.normcliquing import Net
         self.Net = Net
         out = self.FedFuncWholeNet(clients, lambda arr: Net(gamma = self.gamma, eps = self.eps, kappa=self.kappa, tau=self.tau, n_clients = len(self.clients),
-                                                            init_norm = utils.net2vec(self.model.state_dict()).norm(p=2),
+                                                            init_norm = self.norm,
                                                             reputation=self.reputation).cpu()(arr.cpu()))
         return out
 
@@ -330,10 +332,11 @@ class Server():
         deltas = [c.getDelta() for c in clients]
         vecs = [utils.net2vec(delta) for delta in deltas]
         vecs = [vec for vec in vecs if torch.isfinite(vec).all().item()]
-        reputation, result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
+        reputation, norm, result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
         result = result.view(-1)
         utils.vec2net(result, Delta)
         self.reputation = reputation
+        self.norm = norm
         return Delta
 
     def FedFuncWholeStateDict(self, clients, func):
