@@ -28,6 +28,7 @@ class Net(nn.Module):
         self.eps = eps
         self.reputation = np.ones(n_clients)
         self.delta = 0.1
+        self.n_clients = n_clients
 
     def forward(self, input):
         #         print(input.shape)
