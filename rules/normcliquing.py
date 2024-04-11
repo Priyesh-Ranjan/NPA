@@ -40,7 +40,6 @@ class Net(nn.Module):
             out : size =vector dimension, will be flattened afterwards
             
         '''
-        print(self.reputation)
         out = self.adaptor(input)
 
         return self.reputation, out
