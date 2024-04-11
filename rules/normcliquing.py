@@ -40,7 +40,6 @@ class Net(nn.Module):
             out : size =vector dimension, will be flattened afterwards
         '''
         out = self.adaptor(input)
-        print(type(out))
 
         return out
     
@@ -89,6 +88,7 @@ class Net(nn.Module):
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
+                print(Honest)
                 break
             gamma += self.eps
         
