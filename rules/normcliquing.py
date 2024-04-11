@@ -56,6 +56,7 @@ class Net(nn.Module):
         x = deltas.squeeze(0)
         x = x.permute(1, 0)
         w = self.main(x)
+        w = w*self.reputation
         print(w)
         w = w / w.sum()
         out = torch.sum(x.permute(1, 0) * w, dim=1, keepdim=True)
@@ -83,7 +84,7 @@ class Net(nn.Module):
         while len(Honest) == 0 :
             for i in range(n_clients) :
                 for j in range(i+1,n_clients) :
-                    if cs[i,j] < gamma*self.reputation[i] : 
+                    if cs[i,j] < gamma : 
                         neighbors[i,j] = 1
                         neighbors[j,i] = 1
             Cliques = list(bronk([], [*range(n_clients)], [], neighbors))  
