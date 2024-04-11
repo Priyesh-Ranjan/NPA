@@ -71,7 +71,6 @@ class Net(nn.Module):
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
         grads = torch.stack(grads, 1).permute(1,0)        
-        
         # Finding Cliques
                 
         Honest = []
@@ -90,7 +89,7 @@ class Net(nn.Module):
             if max(len(x) for x in Cliques) > n_clients/2 :
                 Honest = max((x) for x in Cliques)
                 break
-            gamma += self.eps
+            gamma -= self.eps
         
         wv = np.array([1 if i in Honest else 0 for i in range(n_clients)])    
         
