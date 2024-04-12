@@ -77,7 +77,7 @@ class Net(nn.Module):
         
         # Finding Cliques
         Honest = []
-        cs = smp.cosine_distance(grads)
+        cs = smp.cosine_distances(grads)
         neighbors = np.zeros_like(cs)
         #print(cs)
         
