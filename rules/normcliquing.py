@@ -57,7 +57,6 @@ class Net(nn.Module):
         x = x.permute(1, 0)
         x, w = self.main(x)
         w = w*self.reputation
-        print(w)
         w = w / w.sum()
         out = torch.sum(x.permute(1, 0) * w, dim=1, keepdim=True)
         return out
@@ -100,7 +99,5 @@ class Net(nn.Module):
         rep = np.array([min(1,self.reputation[i]+self.delta) if i in Honest else max(0,self.reputation[i]-self.delta) for i in range(len(self.reputation))])
         
         self.reputation = rep
-        
-        #print(self.reputation)
-        
+                
         return grads, wv

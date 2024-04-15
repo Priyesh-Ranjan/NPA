@@ -5,6 +5,7 @@ tasks/__pycache__/*
 rules/__pycache__/*
 logs/*
 data/*
+new/*
 ```
 
 *.cpython-37.pyc
