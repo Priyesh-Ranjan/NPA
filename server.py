@@ -333,11 +333,14 @@ class Server():
         deltas = [c.getDelta() for c in clients]
         vecs = [utils.net2vec(delta) for delta in deltas]
         vecs = [vec for vec in vecs if torch.isfinite(vec).all().item()]
-        reputation, norm, result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
+        if self.AR == self.normcliquing :
+            reputation, norm, result = func(torch.stack(vecs, 1).unsqueeze(0))  # input as 1 by d by n
+            self.reputation = reputation
+            self.norm = norm
+        else :
+            result = func(torch.stack(vecs, 1).unsqueeze(0))
         result = result.view(-1)
         utils.vec2net(result, Delta)
-        self.reputation = reputation
-        self.norm = norm
         return Delta
 
     def FedFuncWholeStateDict(self, clients, func):
