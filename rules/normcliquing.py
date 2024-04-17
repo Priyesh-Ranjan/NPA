@@ -67,7 +67,7 @@ class Net(nn.Module):
         # Initializing Norm-Clipping
                 
         norms = [grad.norm(p=2) for grad in grads]
-        idx = [1 if norm > self.norm else 0 for norm in norms]
+        idx = [1 if norm <= self.norm else 0 for norm in norms]
         if sum(idx)/len(idx) > self.tau :
             self.norm = np.percentile(norms, self.tau*100)
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
@@ -79,8 +79,9 @@ class Net(nn.Module):
         cs = smp.cosine_distances(grads)
         neighbors = np.zeros_like(cs)
         #print(cs)
+        arr = cs.flatten()
         
-        gamma = self.gamma
+        gamma = np.percentile(arr, self.tau*100)
         
         while len(Honest) == 0 :
             for i in range(n_clients) :
