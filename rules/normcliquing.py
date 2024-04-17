@@ -73,7 +73,6 @@ class Net(nn.Module):
         grads = [torch.div(grad, max(1,grad.norm(p=2)/self.norm)) for grad in grads]
         grads = torch.stack(grads, 1).permute(1,0)   
         
-        
         # Finding Cliques
         Honest = []
         cs = smp.cosine_distances(grads) + np.eye(n_clients)
