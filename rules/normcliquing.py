@@ -78,9 +78,9 @@ class Net(nn.Module):
         cs = smp.cosine_distances(grads) + np.eye(n_clients)
         neighbors = np.zeros_like(cs)
         #print(cs)
-        arr = cs.flatten()
+        #arr = cs.flatten()
         
-        gamma = np.percentile(arr, self.tau*100)
+        gamma = self.gamma
         
         while len(Honest) == 0 :
             for i in range(n_clients) :
