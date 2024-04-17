@@ -45,7 +45,7 @@ def main(args):
         from tasks import fmnist
         trainData = fmnist.train_dataloader(args.num_clients, loader_type=args.loader_type, path=args.loader_path,
                                            store=False)
-        testData = cifar.test_dataloader(args.test_batch_size)
+        testData = fmnist.test_dataloader(args.test_batch_size)
         Net = fmnist.Net
         criterion = F.cross_entropy   
 
