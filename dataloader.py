@@ -91,7 +91,7 @@ class byLabelLoader(customDataLoader):
 
 
 class dirichletLoader(customDataLoader):
-    def __init__(self, size, dataset, alpha=10, bsz=128):
+    def __init__(self, size, dataset, alpha=100, bsz=128):
         # alpha is used in getPartition,
         # and getPartition is used in parent constructor
         # hence need to initialize alpha first
